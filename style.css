@@ -96,7 +96,7 @@ h2 {
 }
 
 /* Статистика */
-.stats-grid {
+.stats-flex {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -129,6 +129,7 @@ h2 {
 /* Полоски здоровья */
 .health-bar {
   height: 12px;
+  width: 100%;
   background: #333;
   border-radius: 6px;
   overflow: hidden;
@@ -137,6 +138,7 @@ h2 {
 
 .health-fill {
   height: 100%;
+  width: 100%;
   background: linear-gradient(90deg, #00b894 0%, #00a085 100%);
   border-radius: 6px;
   transition: width 0.5s ease;
@@ -144,6 +146,7 @@ h2 {
 
 .enemy-health {
   background: linear-gradient(90deg, #ff7675 0%, #d63031 100%);
+  width: 100%;
 }
 
 /* Инвентарь */
@@ -201,9 +204,10 @@ h2 {
 }
 
 /* Кнопки действий */
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.actions-btn {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   gap: 12px;
   margin-top: 10px;
 }
