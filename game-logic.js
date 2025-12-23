@@ -3,28 +3,74 @@ const bogsButton = document.getElementById("peat-bogs");
 const minesButton = document.getElementById("abandoned-mines");
 const villageButton = document.getElementById("village");
 
+const buttonLocations = {
+  "dark-forest": "Мрачный лес",
+  "peat-bogs": "Торфяные топи",
+  "abandoned-mines": "Заброшенные рудники",
+  "return-village": "Деревня",
+};
 
-forestButton.addEventListener("ckick", () => {
-  goToLocation("Мрачный лес");
-});
+function handleLocationButtonClick(buttonId) {
+  try {
+    const locationName = locations[buttonId];
 
-function goToLocation(locationName) {
-  gameState.currentLocation = locationName;
-  gameState.gamePhase = "combat";
-  //   gameState.currentEnemy = createRandomEnemy(); // TODO: написать функцию
+    if (!locationName) {
+      throw Error("Кнопка не найдена");
+    }
 
-  if (window.updateUI) {
-    updateUI();
+    goToLocation(locationName);
+  } catch (error) {
+    console.log(`Ошибка: ${error.message}`);
   }
 }
 
-// function returnToVillage() {
-//   gameState.currentLocation = "Деревня";
-//   gameState.gamePhase = "exploration";
-//   gameState.currentEnemy = null;
+document.addEventListener("DOMContentLoaded", () => {
+  const locationButton = document.querySelectors(".location-btn[id]");
 
-//   updateUI();
-// }
+  locationButton.forEach(button => {
+    const buttonId = button.id;
+    console.log(buttonId);
+    
+  });
+});
+
+forestButton.addEventListener("click", () => {
+  goToLocation("Мрачный лес");
+  addToLog("Мрачный лес");
+});
+
+bogsButton.addEventListener("click", () => {
+  goToLocation("Торфяные топи");
+});
+
+minesButton.addEventListener("click", () => {
+  goToLocation("Заброшенные рудники");
+});
+
+villageButton.addEventListener("click", () => {
+  goToLocation("Деревня");
+});
+
+function goToLocation(locationName) {
+  try {
+    gameState.currentLocation = locationName;
+
+    if (window.updateUI) {
+      updateUI();
+    } else {
+      throw new Error("Функция updateUI не найдена");
+    }
+  } catch (error) {
+    console.log("Ошибка при переходе в локацию", error);
+    console.log("Подробности:", error.message);
+  }
+}
+
+function returnToVillage() {
+  gameState.currentLocation = "Деревня";
+
+  updateUI();
+}
 
 // function playerAttack() {
 //   gameState.currentEnemy.hp -=

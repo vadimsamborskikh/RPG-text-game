@@ -68,7 +68,7 @@
             <div class="center-panel">
                 <!-- Описание текущей ситуации -->
                 <section class="location-card">
-                    <h2>Деревня</h2>
+                    <h2 id="location-title">Деревня</h2>
                     <p id="location-description">Вы стоите на центральной площади небольшой деревушки. Деревянные дома с
                         соломенными крышами выстроились вокруг мощёной камнем площади. В воздухе пахнет дымом из печей и
                         свежескошенной травой.</p>
@@ -120,10 +120,9 @@
                     <h2>Действия</h2>
                     <p class="action-subtitle" id="action-subtitle">Выберите действие:</p>
                     <div class="actions-btn" id="action-buttons">
-                        <!-- Кнопки будут добавляться динамически через JS -->
-                        <button class="btn-action" id="dark-forest">Идти в мрачный лес</button>
-                        <button class="btn-action" id="peat-bogs">Идти в торфяные топи</button>
-                        <button class="btn-action" id="abandoned-mines">Идти в заброшенные рудники</button>
+                        <button class="btn-action location-btn" id="dark-forest">Идти в мрачный лес</button>
+                        <button class="btn-action location-btn" id="peat-bogs">Идти в торфяные топи</button>
+                        <button class="btn-action location-btn" id="abandoned-mines">Идти в заброшенные рудники</button>
                     </div>
                     <div class="combat-actions" id="combat-actions" style="display: none;">
                         <h3>Боевые действия</h3>
@@ -149,9 +148,10 @@
     </main>
 
     <!-- Скрипты -->
-    <script src="ui-controller.js"></script>
-    <script src="game-state.js"></script>
-    <script src="game-logic.js"></script>
+    <script src="game-data.js"></script> <!-- Сначала данные -->
+    <script src="game-state.js"></script> <!-- Потом состояние -->
+    <script src="ui-controller.js"></script> <!-- Потом UI -->
+    <script src="game-logic.js"></script> <!-- И наконец логику -->
 
 </body>
 
