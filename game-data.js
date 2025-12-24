@@ -5,7 +5,6 @@ const enemies = {
     attack: 3,
     defense: 1,
     xp: 40,
-    loot: ["Сломанный кинжал"],
   },
   wolf: {
     name: "Лесной волк",
@@ -13,7 +12,6 @@ const enemies = {
     attack: 4,
     defense: 0,
     xp: 15,
-    loot: ["Волчья шкура", "Острые клыки"],
   },
   swampCreature: {
     name: "Болотная тварь",
@@ -21,7 +19,6 @@ const enemies = {
     attack: 5,
     defense: 2,
     xp: 20,
-    loot: ["Слизь", "Ядовитый зуб"],
   },
   caveSpider: {
     name: "Пещерный паук",
@@ -29,7 +26,6 @@ const enemies = {
     attack: 4,
     defense: 3,
     xp: 18,
-    loot: ["Паутина", "Яд паука"],
   },
 };
 
@@ -53,4 +49,11 @@ const locationInfo = {
     description: `Вход в шахту полузавален. Внутри — лабиринт узких тоннелей, кое-где подпертых гнилыми балками. На стенах следы кирок. Здесь когда-то добывали руду, но что заставило шахтёров бросить всё? Воздух пыльный, пахнет серой.`,
     possibleEnemies: ["Пещерный паук"],
   },
+};
+
+const buttonLocations = {
+  "dark-forest": "Мрачный лес",
+  "peat-bogs": "Торфяные топи",
+  "abandoned-mines": "Заброшенные рудники",
+  "return-village": "Деревня",
 };

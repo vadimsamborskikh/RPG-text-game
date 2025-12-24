@@ -18,20 +18,20 @@ function updateUI() {
     locationTitle.textContent = gameState.currentLocation;
   } catch (error) {
     console.log("Ошибка:", error.message);
-  };
-};
+  }
+}
 
 function addToLog(location) {
   try {
-    const gameLog = document.getElementById('game-log');
+    const gameLog = document.getElementById("game-log");
 
     if (!gameLog) {
-      throw Error('Поле лога не найдено');
+      throw new Error("Поле лога не найдено");
     }
 
-    const logEntry = document.createElement('p');
+    const logEntry = document.createElement("p");
 
-    logEntry.classList.add('log-entry');
+    logEntry.classList.add("log-entry");
     logEntry.textContent = `Вы осуществили переход в локацию ${location}`;
 
     gameLog.append(logEntry);
@@ -40,4 +40,23 @@ function addToLog(location) {
   }
 }
 
-window.addToLog = addToLog;
+function clearLog() {
+  try {
+    const gameLog = document.getElementById("game-log");
+    const logEntrys = document.querySelectorAll(".log-entry");
+
+    if (!gameLog) {
+      throw new Error('Поле логов не найдено')
+    }
+
+    if (logEntrys.length === 0) {
+      throw new Error('Логи не найдены')
+    }
+
+    logEntrys.forEach((log) => {
+      gameLog.removeChild(log);
+    });
+  } catch (error) {
+    console.log(`Ошибка: ${error.message}`);
+  }
+}
