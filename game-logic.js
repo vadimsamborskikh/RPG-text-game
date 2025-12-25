@@ -42,15 +42,13 @@ function goToLocation(locationName) {
       locationEnemies.possibleEnemies &&
       locationEnemies.possibleEnemies.length > 0
     ) {
-      if (Math.random() < 0.5) {
-        console.log("Встречаем врага в", locationName);
-        
-        gameState.currentEnemy = createRandomEnemy(locationName);
-        gameState.gamePhase = "combat";
-      } else {
-        gameState.currentEnemy = null;
-        gameState.gamePhase = "exploration";
-      }
+      console.log("Встречаем врага в", locationName);
+
+      gameState.currentEnemy = createRandomEnemy(locationName);
+      gameState.gamePhase = "combat";
+      showEnemyPanel();
+      addToLog(locationName);
+      addToLog(`Вы встретили ${gameState.currentEnemy.name}`)
     } else {
       gameState.currentEnemy = null;
       gameState.gamePhase = "exploration";
@@ -62,9 +60,7 @@ function goToLocation(locationName) {
       throw new Error("Функция updateUI не найдена");
     }
 
-    if (window.addToLog) {
-      addToLog(locationName);
-    }
+    
   } catch (error) {
     console.log("Ошибка при переходе в локацию", error);
     console.log("Подробности:", error.message);
@@ -125,5 +121,24 @@ function createRandomEnemy(locationName) {
   } catch (error) {
     console.log(`Ошибка: ${error.message}`);
     return null;
+  }
+}
+
+function showEnemyPanel() {
+  try {
+    const enemyPanel = document.getElementById("enemy-section");
+
+    if (!enemyPanel) {
+      throw new Error("Панель противника не найдена");
+    }
+    
+    if (gameState.currentEnemy) {
+      enemyPanel.style.display = "block"
+    } else {
+      enemyPanel.style.display = "none"
+    }
+
+  } catch (error) {
+    console.log("Подробности:", error.message);
   }
 }
