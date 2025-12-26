@@ -47,8 +47,7 @@ function goToLocation(locationName) {
       gameState.currentEnemy = createRandomEnemy(locationName);
       gameState.gamePhase = "combat";
       showEnemyPanel();
-      addToLog(locationName);
-      addToLog(`Вы встретили ${gameState.currentEnemy.name}`)
+      addToLog(locationName, gameState.currentEnemy.name)
     } else {
       gameState.currentEnemy = null;
       gameState.gamePhase = "exploration";
@@ -72,11 +71,6 @@ function returnToVillage() {
 
   updateUI();
 }
-
-// function playerAttack() {
-//   gameState.currentEnemy.hp -=
-//     gameState.hero.attack - gameState.currentEnemy.defense;
-// }
 
 if (clearLogButton) {
   clearLogButton.addEventListener("click", clearLog);
@@ -114,6 +108,7 @@ function createRandomEnemy(locationName) {
     return {
       name: enemyData.name,
       hp: enemyData.hp,
+      maxHp: enemyData.hp,
       attack: enemyData.attack,
       defense: enemyData.defense,
       xp: enemyData.xp,
@@ -124,21 +119,7 @@ function createRandomEnemy(locationName) {
   }
 }
 
-function showEnemyPanel() {
-  try {
-    const enemyPanel = document.getElementById("enemy-section");
 
-    if (!enemyPanel) {
-      throw new Error("Панель противника не найдена");
-    }
-    
-    if (gameState.currentEnemy) {
-      enemyPanel.style.display = "block"
-    } else {
-      enemyPanel.style.display = "none"
-    }
-
-  } catch (error) {
-    console.log("Подробности:", error.message);
-  }
+function initCombatButtons() {
+  
 }

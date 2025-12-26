@@ -21,7 +21,7 @@ function updateUI() {
   }
 }
 
-function addToLog(location) {
+function addToLog(location, enemy = null) {
   try {
     const gameLog = document.getElementById("game-log");
 
@@ -32,9 +32,16 @@ function addToLog(location) {
     const logEntry = document.createElement("p");
 
     logEntry.classList.add("log-entry");
-    logEntry.textContent = `Вы осуществили переход в локацию ${location}`;
+
+    if (enemy !== null) {
+      logEntry.textContent = `Вы осуществили переход в локацию ${location}. Вас атакует: ${enemy}!!!`;
+    } else {
+      logEntry.textContent = `Вы осуществили переход в локацию ${location}`;
+    }
 
     gameLog.append(logEntry);
+
+    gameLog.scrollTop = gameLog.scrollHeight;
   } catch (error) {
     console.log(`Ошибка: ${error.message}`);
   }
@@ -56,6 +63,62 @@ function clearLog() {
     logEntrys.forEach((log) => {
       gameLog.removeChild(log);
     });
+  } catch (error) {
+    console.log(`Ошибка: ${error.message}`);
+  }
+}
+
+function showEnemyPanel() {
+  try {
+    const enemyPanel = document.getElementById("enemy-section");
+
+    if (!enemyPanel) {
+      throw new Error("Панель противника не найдена");
+    }
+    
+    if (gameState.currentEnemy) {
+      enemyPanel.style.display = "block"
+      updateEnemyStats();
+
+      const combatActions = document.getElementById('combat-actions');
+      combatActions.style.display = 'block';
+
+    } else {
+      enemyPanel.style.display = "none"
+    }
+
+    
+  } catch (error) {
+    console.log("Подробности:", error.message);
+  }
+}
+
+function updateEnemyStats() {
+  try {
+    if (!gameState.currentEnemy) {
+      console.log('Нет врага');
+      return
+    }
+
+    const enemyName = document.getElementById('enemy-name');
+    const enemyHp = document.getElementById('enemy-hp');
+    const enemyHealthBar = document.getElementById('enemy-health-bar');
+    const enemyAttack = document.getElementById("enemy-attack");
+    const enemyDefense = document.getElementById("enemy-defense");
+
+    const percentage = (gameState.currentEnemy.hp / gameState.currentEnemy.maxHp) * 100;
+    const maxHp = gameState.currentEnemy.maxHp || gameState.currentEnemy.hp;
+
+    if (!enemyName || !enemyHp || !enemyHealthBar || !enemyAttack || !enemyDefense) {
+      throw new Error('Найдены не все элементы');
+    }
+
+    enemyName.textContent = gameState.currentEnemy.name;
+    enemyHp.textContent = `${gameState.currentEnemy.hp}/${maxHp}`;
+    enemyAttack.textContent = gameState.currentEnemy.attack;
+    enemyDefense.textContent = gameState.currentEnemy.defense;
+    enemyHealthBar.style.width = percentage + "%";
+
   } catch (error) {
     console.log(`Ошибка: ${error.message}`);
   }
