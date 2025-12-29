@@ -21,7 +21,7 @@ function updateUI() {
   }
 }
 
-function addToLog(location, enemy = null) {
+function addLocationLog(location, enemy = null) {
   try {
     const gameLog = document.getElementById("game-log");
 
@@ -33,11 +33,33 @@ function addToLog(location, enemy = null) {
 
     logEntry.classList.add("log-entry");
 
-    if (enemy !== null) {
-      logEntry.textContent = `Вы осуществили переход в локацию ${location}. Вас атакует: ${enemy}!!!`;
-    } else {
+    if (!enemy) {
       logEntry.textContent = `Вы осуществили переход в локацию ${location}`;
+    } else {
+      logEntry.textContent = `Вы осуществили переход в локацию ${location}. Вас атакует: ${enemy}!!!`;
     }
+
+    gameLog.append(logEntry);
+
+    gameLog.scrollTop = gameLog.scrollHeight;
+  } catch (error) {
+    console.log(`Ошибка: ${error.message}`);
+  }
+}
+
+function addCombatLog(message) {
+  try {
+    const gameLog = document.getElementById("game-log");
+
+    if (!gameLog) {
+      throw new Error("Поле лога не найдено");
+    }
+
+    const logEntry = document.createElement("p");
+
+    logEntry.classList.add("log-entry");
+
+    logEntry.textContent = message;
 
     gameLog.append(logEntry);
 
@@ -53,11 +75,11 @@ function clearLog() {
     const logEntrys = document.querySelectorAll(".log-entry");
 
     if (!gameLog) {
-      throw new Error('Поле логов не найдено')
+      throw new Error("Поле логов не найдено");
     }
 
     if (logEntrys.length === 0) {
-      throw new Error('Логи не найдены')
+      throw new Error("Логи не найдены");
     }
 
     logEntrys.forEach((log) => {
@@ -75,19 +97,16 @@ function showEnemyPanel() {
     if (!enemyPanel) {
       throw new Error("Панель противника не найдена");
     }
-    
+
     if (gameState.currentEnemy) {
-      enemyPanel.style.display = "block"
+      enemyPanel.style.display = "block";
       updateEnemyStats();
 
-      const combatActions = document.getElementById('combat-actions');
-      combatActions.style.display = 'block';
-
+      const combatActions = document.getElementById("combat-actions");
+      combatActions.style.display = "block";
     } else {
-      enemyPanel.style.display = "none"
+      enemyPanel.style.display = "none";
     }
-
-    
   } catch (error) {
     console.log("Подробности:", error.message);
   }
@@ -96,21 +115,28 @@ function showEnemyPanel() {
 function updateEnemyStats() {
   try {
     if (!gameState.currentEnemy) {
-      console.log('Нет врага');
-      return
+      console.log("Нет врага");
+      return;
     }
 
-    const enemyName = document.getElementById('enemy-name');
-    const enemyHp = document.getElementById('enemy-hp');
-    const enemyHealthBar = document.getElementById('enemy-health-bar');
+    const enemyName = document.getElementById("enemy-name");
+    const enemyHp = document.getElementById("enemy-hp");
+    const enemyHealthBar = document.getElementById("enemy-health-bar");
     const enemyAttack = document.getElementById("enemy-attack");
     const enemyDefense = document.getElementById("enemy-defense");
 
-    const percentage = (gameState.currentEnemy.hp / gameState.currentEnemy.maxHp) * 100;
+    const percentage =
+      (gameState.currentEnemy.hp / gameState.currentEnemy.maxHp) * 100;
     const maxHp = gameState.currentEnemy.maxHp || gameState.currentEnemy.hp;
 
-    if (!enemyName || !enemyHp || !enemyHealthBar || !enemyAttack || !enemyDefense) {
-      throw new Error('Найдены не все элементы');
+    if (
+      !enemyName ||
+      !enemyHp ||
+      !enemyHealthBar ||
+      !enemyAttack ||
+      !enemyDefense
+    ) {
+      throw new Error("Найдены не все элементы");
     }
 
     enemyName.textContent = gameState.currentEnemy.name;
@@ -118,7 +144,6 @@ function updateEnemyStats() {
     enemyAttack.textContent = gameState.currentEnemy.attack;
     enemyDefense.textContent = gameState.currentEnemy.defense;
     enemyHealthBar.style.width = percentage + "%";
-
   } catch (error) {
     console.log(`Ошибка: ${error.message}`);
   }
