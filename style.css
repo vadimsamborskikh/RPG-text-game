@@ -316,3 +316,7 @@ h2 {
 ::-webkit-scrollbar-thumb:hover {
   background: #0097a7;
 }
+
+.btn-disabled {
+  cursor: not-allowed;
+}

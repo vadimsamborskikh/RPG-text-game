@@ -5,6 +5,9 @@ const gameState = {
     maxHp: 30,
     attack: 5,
     defense: 3,
+    level: 1,
+    xp: 0,
+    xpToNextLevel: 100,
     inventory: [
       "Зелье здоровья",
       "Зелье здоровья",

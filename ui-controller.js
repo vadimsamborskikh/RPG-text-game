@@ -148,3 +148,63 @@ function updateEnemyStats() {
     console.log(`Ошибка: ${error.message}`);
   }
 }
+
+function updatePlayerStats() {
+  try {
+    const playerName = document.getElementById("player-name");
+    const playerHp = document.getElementById("player-hp");
+    const playerHealthBar = document.getElementById("player-health-bar");
+    const playerAttack = document.getElementById("player-attack");
+    const playerLevel = document.getElementById("player-level");
+    const playerXp = document.getElementById("player-xp");
+
+    if (playerName) playerName.textContent = gameState.hero.name;
+    if (playerHp)
+      playerHp.textContent = `${gameState.hero.hp} / ${gameState.hero.maxHp}`;
+    if (playerAttack) playerAttack.textContent = gameState.hero.attack;
+    if (playerLevel) playerLevel.textContent = "1";
+
+    if (playerHealthBar) {
+      const percentage = (gameState.hero.hp / gameState.hero.maxHp) * 100;
+      playerHealthBar.style.width = percentage + "%";
+
+      if (percentage > 50) {
+        playerHealthBar.style.background =
+          "linear-gradient(90deg, #00b894 0%, #00a085 100%)";
+      } else if (percentage > 25) {
+        playerHealthBar.style.background =
+          "linear-gradient(90deg, #fdcb6e 0%, #e17055 100%)";
+      } else {
+        playerHealthBar.style.background =
+          "linear-gradient(90deg, #ff7675 0%, #d63031 100%)";
+      }
+    }
+
+    if (playerXp) {
+      playerXp.textContent = `${gameState.hero.xp}/${gameState.hero.xpToNextLevel}`;
+    }
+  } catch (error) {
+    console.log("Ошибка в updatePlayerStats:", error.message);
+  }
+}
+
+function updateInventory() {
+  try {
+    const inventoryList = document.getElementById("inventory-list");
+    if (!inventoryList) return;
+
+    inventoryList.innerHTML = "";
+
+    const potionCount = gameState.hero.inventory.filter(
+      (item) => item === "Зелье здоровья",
+    ).length;
+
+    if (potionCount > 0) {
+      const li = document.createElement("li");
+      li.textContent = `Зелье здоровья x${potionCount}`;
+      inventoryList.appendChild(li);
+    }
+  } catch (error) {
+    console.log("Ошибка при обновлении инвентаря:", error.message);
+  }
+}

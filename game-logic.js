@@ -50,7 +50,6 @@ function goToLocation(locationName) {
       } else {
         addLocationLog(locationName);
       }
-      
     } else {
       gameState.currentEnemy = null;
       gameState.gamePhase = "exploration";
@@ -70,7 +69,7 @@ function goToLocation(locationName) {
 function returnToVillage() {
   gameState.currentLocation = "Деревня";
   gameState.currentEnemy = null;
-  gameState.gamePhase = "exploration"
+  gameState.gamePhase = "exploration";
 
   updateUI();
 }
@@ -94,7 +93,7 @@ function createRandomEnemy(locationName) {
     let enemyKey = enemyName.toLowerCase();
 
     const enemyMap = {
-      "гоблин": "goblin",
+      гоблин: "goblin",
       "лесной волк": "wolf",
       "болотная тварь": "swampCreature",
       "пещерный паук": "caveSpider",
@@ -135,35 +134,63 @@ function initCombatButtons() {
 
       switch (action) {
         case "attack":
-          button.addEventListener("click", playerAttack)
-          addCombatLog(`Вы наносите удар по врагу ${gameState.currentEnemy.name}`);
+          button.addEventListener("click", playerAttack);
+          // addCombatLog(
+          //   `Вы наносите удар по врагу ${gameState.currentEnemy.name}`
+          // );
           break;
+
         case "defend":
           button.addEventListener("click", () => {
-            addCombatLog('Вы защищаетесть. Следующая атака врага нанесет меньше урона');
+            addCombatLog(
+              "Вы защищаетесть. Следующая атака врага нанесет меньше урона"
+            );
             enemyAttack();
           });
           break;
+
         case "potion":
           button.addEventListener("click", () => {
-            if (gameState.hero.hp <= 25) {
-              gameState.hero.hp += 5;
-            } else {
-              gameState.hero.hp += (gameState.hero.maxHp - gameState.hero.hp);
+            if (gameState.hero.inventory.length > 0) {
+              const potionIndex =
+                gameState.hero.inventory.indexOf("Зелье здоровья");
+              if (potionIndex !== -1) {
+                gameState.hero.inventory.splice(potionIndex, 1);
+              }
+
+              const healthAmount = 15;
+              const oldHp = gameState.hero.hp;
+              gameState.hero.hp += healthAmount;
+              if (gameState.hero.hp > gameState.hero.maxHp) {
+                gameState.hero.hp = gameState.hero.maxHp;
+              }
+
+              addCombatLog(
+                `Вы выпили зелье здоровья и восстановили ${
+                  gameState.hero.hp - oldHp
+                } HP!`
+              );
+
+              updatePlayerStats();
+
+              enemyAttack();
             }
           });
           break;
+
         case "flee":
           button.addEventListener("click", () => {
             const randomFlee = Math.random();
 
             if (randomFlee > 0.5) {
-              addCombatLog(`Вам удалось сбежать от ${gameState.currentEnemy.name}`);
+              addCombatLog(
+                `Вам удалось сбежать от ${gameState.currentEnemy.name}`
+              );
 
               gameState.currentEnemy = null;
               gameState.gamePhase = "exploration";
             } else {
-              addCombatLog('Побег не удался! Сражайся дальше.')
+              addCombatLog("Побег не удался! Сражайся дальше.");
             }
           });
           break;
@@ -212,21 +239,124 @@ function enemyDefeat() {
     const enemyName = gameState.currentEnemy.name;
     const xpGained = gameState.currentEnemy.xp || 10;
 
-    if (gameState.hero.xp !== undefined) {
-      gameState.hero.xp += xpGained;
-    }
+    gameState.hero.xp += xpGained;
 
     addCombatLog(`Вы победили ${enemyName} и получили ${xpGained} опыта!`);
 
     gameState.currentEnemy = null;
-    gameState.gamePhase = 'exploration';
+    gameState.gamePhase = "exploration";
 
     updateEnemyStats();
     showEnemyPanel();
 
     updatePlayerStats();
   } catch (error) {
-    console.log('Ошибка в enemyDefeated:', error.message);
+    console.log("Ошибка в enemyDefeated:", error.message);
   }
 }
 
+function enemyAttack() {
+  try {
+    if (!gameState.currentEnemy || gameState.currentEnemy.hp <= 0) {
+      return;
+    }
+
+    let damage = gameState.currentEnemy.attack - gameState.hero.defense;
+    if (damage < 1) damage = 1;
+
+    gameState.hero.hp -= damage;
+
+    addCombatLog(
+      `${gameState.currentEnemy.name} атакует вас и наносит ${damage} урона!`
+    );
+
+    updatePlayerStats();
+
+    if (gameState.hero.hp <= 0) {
+      gameState.hero.hp = 0;
+      addCombatLog("Вы погибли! Игра окончена.");
+      updatePlayerStats();
+      disabledActionAndTravelButtons();
+    }
+  } catch (error) {
+    console.log("Ошибка в enemyAttack:", error.message);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCombatButtons();
+})
+
+function checkLevelUp() {
+  try {
+    if (gameState.hero.xp >= gameState.hero.xpToNextLevel) {
+      gameState.hero.level += 1;
+
+      const excessXp = gameState.hero.xp - gameState.hero.xpToNextLevel;
+
+      gameState.hero.xp = excessXp;
+
+      gameState.hero.hp += 1;
+      gameState.hero.maxHp += 1;
+      gameState.hero.attack += 1;
+      gameState.hero.defense += 1;
+
+      addCombatLog(`Вы достигли ${gameState.hero.level} уровня!`)
+
+      updatePlayerStats();
+
+      return truel;
+    }
+    return false;
+  } catch (error) {
+    console.log('Ошибка в checkLevelUp:', error.message);
+    return false;
+  }
+}
+
+function disabledActionAndTravelButtons() {
+  try {
+    const actionBtn = document.querySelectorAll('.btn-action');
+    
+    actionBtn.forEach((button) => {
+      button.disabled = true;
+      button.classList.add('btn-disabled');
+    })
+  } catch (error) {
+    console.error(`Поймана ошибка в диактивации кнопок: ${error}`);
+  }
+}
+
+function enabledActionAndTravelButtons() {
+  try {
+    const actionBtn = document.querySelectorAll('.btn-action');
+    
+    actionBtn.forEach((button) => {
+      button.disabled = false;
+      button.classList.remove('btn-disabled');
+    })
+  } catch (error) {
+    console.error(`Поймана ошибка в диактивации кнопок: ${error}`);
+  }
+}
+
+function restartGame() {
+  try {
+    const restartButton = document.getElementById('reset-btn');
+
+    restartButton.addEventListener('click', () => {
+      gameState.hero.hp = gameState.hero.maxHp;
+      gameState.hero.level = 1;
+      gameState.hero.xp = 0;
+      gameState.hero.currentLocation = 'Деревня';
+      gameState.hero.currentEnemy = null;
+      gameState.hero.gamePhase = "exploration";
+
+      enabledActionAndTravelButtons();
+    })
+  } catch (error) {
+    console.error(`Поймана ошибка в рестарте игры: ${error}`);
+  }
+}
+
+restartGame();
