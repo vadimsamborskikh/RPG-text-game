@@ -90,6 +90,23 @@ function clearLog() {
   }
 }
 
+function resetLog() {
+  try {
+    const gameLog = document.getElementById("game-log");
+
+    if (!gameLog) {
+      throw new Error("Поле логов не найдено");
+    }
+
+    gameLog.innerHTML = `
+      <p class="log-entry">Добро пожаловать в игру, путник!<br>Пора отправляться в приключение!
+      Выбери, куда ты отправишься.</p>
+                            `;
+  } catch (error) {
+    console.log(`Ошибка: ${error.message}`);
+  }
+}
+
 function showEnemyPanel() {
   try {
     const enemyPanel = document.getElementById("enemy-section");
@@ -140,7 +157,7 @@ function updateEnemyStats() {
     }
 
     enemyName.textContent = gameState.currentEnemy.name;
-    enemyHp.textContent = `${gameState.currentEnemy.hp}/${maxHp}`;
+    enemyHp.textContent = `${gameState.currentEnemy.hp} / ${maxHp}`;
     enemyAttack.textContent = gameState.currentEnemy.attack;
     enemyDefense.textContent = gameState.currentEnemy.defense;
     enemyHealthBar.style.width = percentage + "%";
@@ -181,7 +198,7 @@ function updatePlayerStats() {
     }
 
     if (playerXp) {
-      playerXp.textContent = `${gameState.hero.xp}/${gameState.hero.xpToNextLevel}`;
+      playerXp.textContent = `${gameState.hero.xp} / ${gameState.hero.xpToNextLevel}`;
     }
   } catch (error) {
     console.log("Ошибка в updatePlayerStats:", error.message);
@@ -190,19 +207,15 @@ function updatePlayerStats() {
 
 function updateInventory() {
   try {
-    const inventoryList = document.getElementById("inventory-list");
-    if (!inventoryList) return;
-
-    inventoryList.innerHTML = "";
+    const inventoryItem = document.getElementById("inventory-item");
+    if (!inventoryItem) return;
 
     const potionCount = gameState.hero.inventory.filter(
       (item) => item === "Зелье здоровья",
     ).length;
 
-    if (potionCount > 0) {
-      const li = document.createElement("li");
-      li.textContent = `Зелье здоровья x${potionCount}`;
-      inventoryList.appendChild(li);
+    if (potionCount >= 0) {
+      inventoryItem.textContent = `Зелье здоровья ×${potionCount}`;
     }
   } catch (error) {
     console.log("Ошибка при обновлении инвентаря:", error.message);

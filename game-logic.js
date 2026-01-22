@@ -135,17 +135,16 @@ function initCombatButtons() {
       switch (action) {
         case "attack":
           button.addEventListener("click", playerAttack);
-          // addCombatLog(
-          //   `Вы наносите удар по врагу ${gameState.currentEnemy.name}`
-          // );
           break;
 
         case "defend":
           button.addEventListener("click", () => {
             addCombatLog(
-              "Вы защищаетесть. Следующая атака врага нанесет меньше урона"
+              "Вы защищаетесть и получаете 1 урон!",
             );
-            enemyAttack();
+
+            gameState.hero.hp -= 1;
+            updatePlayerStats();
           });
           break;
 
@@ -155,7 +154,7 @@ function initCombatButtons() {
               const potionIndex =
                 gameState.hero.inventory.indexOf("Зелье здоровья");
               if (potionIndex !== -1) {
-                gameState.hero.inventory.splice(potionIndex, 1);
+                gameState.hero.inventory.shift();
               }
 
               const healthAmount = 15;
@@ -168,12 +167,14 @@ function initCombatButtons() {
               addCombatLog(
                 `Вы выпили зелье здоровья и восстановили ${
                   gameState.hero.hp - oldHp
-                } HP!`
+                } HP!`,
               );
 
               updatePlayerStats();
 
               enemyAttack();
+
+              updateInventory();
             }
           });
           break;
@@ -184,7 +185,7 @@ function initCombatButtons() {
 
             if (randomFlee > 0.5) {
               addCombatLog(
-                `Вам удалось сбежать от ${gameState.currentEnemy.name}`
+                `Вам удалось сбежать от ${gameState.currentEnemy.name}`,
               );
 
               gameState.currentEnemy = null;
@@ -217,7 +218,7 @@ function playerAttack() {
     gameState.currentEnemy.hp -= damage;
 
     addCombatLog(
-      `Вы атаковали ${gameState.currentEnemy.name} и нанесли ${damage} урона`
+      `Вы атаковали ${gameState.currentEnemy.name} и нанесли ${damage} урона`,
     );
 
     updateEnemyStats();
@@ -267,7 +268,7 @@ function enemyAttack() {
     gameState.hero.hp -= damage;
 
     addCombatLog(
-      `${gameState.currentEnemy.name} атакует вас и наносит ${damage} урона!`
+      `${gameState.currentEnemy.name} атакует вас и наносит ${damage} урона!`,
     );
 
     updatePlayerStats();
@@ -283,9 +284,9 @@ function enemyAttack() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initCombatButtons();
-})
+});
 
 function checkLevelUp() {
   try {
@@ -301,27 +302,27 @@ function checkLevelUp() {
       gameState.hero.attack += 1;
       gameState.hero.defense += 1;
 
-      addCombatLog(`Вы достигли ${gameState.hero.level} уровня!`)
+      addCombatLog(`Вы достигли ${gameState.hero.level} уровня!`);
 
       updatePlayerStats();
 
-      return truel;
+      return true;
     }
     return false;
   } catch (error) {
-    console.log('Ошибка в checkLevelUp:', error.message);
+    console.log("Ошибка в checkLevelUp:", error.message);
     return false;
   }
 }
 
 function disabledActionAndTravelButtons() {
   try {
-    const actionBtn = document.querySelectorAll('.btn-action');
-    
+    const actionBtn = document.querySelectorAll(".btn-action");
+
     actionBtn.forEach((button) => {
       button.disabled = true;
-      button.classList.add('btn-disabled');
-    })
+      button.classList.add("btn-disabled");
+    });
   } catch (error) {
     console.error(`Поймана ошибка в диактивации кнопок: ${error}`);
   }
@@ -329,12 +330,12 @@ function disabledActionAndTravelButtons() {
 
 function enabledActionAndTravelButtons() {
   try {
-    const actionBtn = document.querySelectorAll('.btn-action');
-    
+    const actionBtn = document.querySelectorAll(".btn-action");
+
     actionBtn.forEach((button) => {
       button.disabled = false;
-      button.classList.remove('btn-disabled');
-    })
+      button.classList.remove("btn-disabled");
+    });
   } catch (error) {
     console.error(`Поймана ошибка в диактивации кнопок: ${error}`);
   }
@@ -342,18 +343,36 @@ function enabledActionAndTravelButtons() {
 
 function restartGame() {
   try {
-    const restartButton = document.getElementById('reset-btn');
+    const restartButton = document.getElementById("reset-btn");
+    const enemyPanel = document.getElementById("enemy-section");
+    const combatPanel = document.getElementById("combat-actions");
 
-    restartButton.addEventListener('click', () => {
+    restartButton.addEventListener("click", () => {
       gameState.hero.hp = gameState.hero.maxHp;
       gameState.hero.level = 1;
       gameState.hero.xp = 0;
-      gameState.hero.currentLocation = 'Деревня';
-      gameState.hero.currentEnemy = null;
-      gameState.hero.gamePhase = "exploration";
+      gameState.currentLocation = "Деревня";
+      gameState.currentEnemy = null;
+      gameState.gamePhase = "exploration";
+      gameState.hero.inventory = [
+        "Зелье здоровья",
+        "Зелье здоровья",
+        "Зелье здоровья",
+      ];
 
-      enabledActionAndTravelButtons();
-    })
+      if (!gameState.currentEnemy) {
+        enemyPanel.style.display = "none";
+      }
+
+      if (combatPanel) {
+        combatPanel.style.display = "none";
+      }
+
+      updatePlayerStats();
+      updateUI();
+      resetLog();
+      updateInventory();
+    });
   } catch (error) {
     console.error(`Поймана ошибка в рестарте игры: ${error}`);
   }
