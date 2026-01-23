@@ -139,9 +139,7 @@ function initCombatButtons() {
 
         case "defend":
           button.addEventListener("click", () => {
-            addCombatLog(
-              "Вы защищаетесть и получаете 1 урон!",
-            );
+            addCombatLog("Вы защищаетесть и получаете 1 урон!");
 
             gameState.hero.hp -= 1;
             updatePlayerStats();
@@ -291,27 +289,21 @@ document.addEventListener("DOMContentLoaded", () => {
 function checkLevelUp() {
   try {
     if (gameState.hero.xp >= gameState.hero.xpToNextLevel) {
-      gameState.hero.level += 1;
-
       const excessXp = gameState.hero.xp - gameState.hero.xpToNextLevel;
-
       gameState.hero.xp = excessXp;
 
-      gameState.hero.hp += 1;
+      gameState.hero.level += 1;
       gameState.hero.maxHp += 1;
+      gameState.hero.hp = gameState.hero.maxHp;
       gameState.hero.attack += 1;
       gameState.hero.defense += 1;
 
       addCombatLog(`Вы достигли ${gameState.hero.level} уровня!`);
 
       updatePlayerStats();
-
-      return true;
     }
-    return false;
   } catch (error) {
     console.log("Ошибка в checkLevelUp:", error.message);
-    return false;
   }
 }
 
@@ -364,7 +356,7 @@ function restartGame() {
         enemyPanel.style.display = "none";
       }
 
-      if (combatPanel) {
+      if (!combatPanel) {
         combatPanel.style.display = "none";
       }
 

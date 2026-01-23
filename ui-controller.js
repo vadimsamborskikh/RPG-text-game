@@ -172,14 +172,25 @@ function updatePlayerStats() {
     const playerHp = document.getElementById("player-hp");
     const playerHealthBar = document.getElementById("player-health-bar");
     const playerAttack = document.getElementById("player-attack");
+    const playerDefense = document.getElementById("player-defense");
     const playerLevel = document.getElementById("player-level");
     const playerXp = document.getElementById("player-xp");
 
     if (playerName) playerName.textContent = gameState.hero.name;
+
     if (playerHp)
       playerHp.textContent = `${gameState.hero.hp} / ${gameState.hero.maxHp}`;
-    if (playerAttack) playerAttack.textContent = gameState.hero.attack;
-    if (playerLevel) playerLevel.textContent = "1";
+
+    if (playerAttack) {
+      playerAttack.textContent = gameState.hero.attack;
+    }
+    
+    if (playerDefense) playerDefense.textContent = gameState.hero.defense;
+
+    if (playerLevel) {
+      playerLevel.textContent = gameState.hero.level;
+      checkLevelUp();
+    } 
 
     if (playerHealthBar) {
       const percentage = (gameState.hero.hp / gameState.hero.maxHp) * 100;
